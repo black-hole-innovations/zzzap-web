@@ -1,0 +1,49 @@
+@page "/kaje/sort"
+@inherits AppComponentBase
+
+<h1 class="mb-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+    Sorting
+</h1>
+
+<form @onsubmit="sortList" class="max-w-xl">
+<input type="submit" class="hidden">
+<CascadingValue Value=@errorStatus>
+    <ErrorSummary  />
+        <TextInput placeholder="Enter a comma limited list of stuff" @bind-Value="UnsortedListString" Label="" />
+    <div class="mt-4 bg-white dark:bg-black shadow overflow-hidden rounded-md">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
+        @foreach (var item in list)
+        {
+            <li  class="px-6 py-4">
+                @item
+            </li>
+        }
+        </ul>
+    </div>
+</CascadingValue>
+</form>
+
+@code {
+    string UnsortedListString;
+    KajeSort request = new();
+    ResponseStatus? errorStatus;
+    List<string> list = new List<string>();
+    protected override async Task OnInitializedAsync() { }
+
+    async Task sortList()
+    {
+        errorStatus = null;
+        //todos.Add(new Todo { Text = request.Text });
+        request.Unsorted = UnsortedListString.Split(',').ToList();
+        var api = await ApiAsync(request);
+        if (api.Succeeded) {
+            request.Unsorted = new List<string>();
+            list = api.Response!;
+        }
+        else
+            errorStatus = api.Error;
+        
+    }
+
+   
+}

@@ -1,0 +1,139 @@
+@page "/kaje/list"
+@inherits AppComponentBase
+
+<h1 class="mb-4 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+    Push Data
+    @*<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>*@
+</h1>
+
+<form @onsubmit="addList" class="max-w-xl">
+    <input type="submit" class="hidden">
+    <CascadingValue Value=@errorStatus>
+
+        <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+
+            <div class="space-y-6 pt-8 sm:space-y-5 sm:pt-10">
+                <div>
+                    <h3 class="text-base font-semibold leading-6 ">Address</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Use a permanent address where you can receive mail.</p>
+                </div>
+                <div class="space-y-6 sm:space-y-5">
+
+
+                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label for="street-address" class="block text-sm font-medium leading-6  sm:pt-1.5">Street address</label>
+                        <div class="mt-2 sm:col-span-2 sm:mt-0">
+                            <TextInput placeholder="Address" @bind-Value="@request.Address" Label="" />
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label for="city" class="block text-sm font-medium leading-6  sm:pt-1.5">City</label>
+                        <div class="mt-2 sm:col-span-2 sm:mt-0">
+                            <TextInput placeholder="City" @bind-Value="@request.City" Label="" />
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label for="region" class="block text-sm font-medium leading-6  sm:pt-1.5">State / Province</label>
+                        <div class="mt-2 sm:col-span-2 sm:mt-0">
+                            <TextInput placeholder="Province/State" @bind-Value="@request.State" Label="" />
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label for="postal-code" class="block text-sm font-medium leading-6 sm:pt-1.5">ZIP / Postal code</label>
+                        <div class="mt-2 sm:col-span-2 sm:mt-0">
+                            <TextInput placeholder="Postal Code" @bind-Value="@request.PostalCode" Label="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="pt-5">
+            <div class="flex justify-end gap-x-3">
+
+                <button type="submit" class="inline-flex justify-center rounded-md  py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+            </div>
+        </div>
+
+        <ErrorSummary Except="VisibleFields" />
+        <div class="mt-4 bg-white dark:bg-black shadow overflow-hidden rounded-md">
+            <div class="bg-gray-900 py-10">
+                <div class="px-4 sm:px-6 lg:px-8">
+                    <div class="sm:flex sm:items-center">
+                        <div class="sm:flex-auto">
+                            <h1 class="text-base font-semibold leading-6 text-white">Address Book</h1>
+                            <p class="mt-2 text-sm ">A list of all your saved addresses.</p>
+                        </div>
+
+                    </div>
+                    <div class="mt-8 flow-root">
+                        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                <table class="min-w-full divide-y divide-gray-700">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-0">Address</th>
+                                            <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">City</th>
+                                            <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">State</th>
+                                            <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold text-white">Zip</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-800">
+                                        @foreach (var item in list)
+                                        {
+                                            <tr>
+                                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0">@item.Data.Address</td>
+                                                <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300">@item.Data.City</td>
+                                                <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300">@item.Data.State</td>
+                                                <td class="whitespace-nowrap py-4 px-3 text-sm text-gray-300">@item.Data.PostalCode</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </CascadingValue>
+</form>
+@code {
+    static string[] VisibleFields = new[] { nameof(KajeAddItem.Address), nameof(KajeAddItem.City), nameof(KajeAddItem.State), nameof(KajeAddItem.PostalCode) };
+
+    ResponseStatus? errorStatus;
+    List<KajeItem> list = new List<KajeItem>();
+    KajeAddItem request = new KajeAddItem() { };
+    protected override async Task OnInitializedAsync() => await refreshItems();
+
+    async Task refreshItems()
+    {
+        var api = await ApiAsync(new KajeQueryItems());
+        if (api.Succeeded)
+            list = api.Response!;
+        else
+            errorStatus = api.Error;
+    }
+
+    async Task addList()
+    {
+        errorStatus = null;
+        var api = await ApiAsync(request);
+        if (api.Succeeded)
+        {
+            request = new KajeAddItem();
+            await refreshItems();
+        }
+        else
+            errorStatus = api.Error;
+    }
+}
